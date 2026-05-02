@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Präattentive Wahrnehmung</title>
+        <script src="scripts/svg-functions.js"></script>
+        <script src="scripts/data-functions.js"></script>
+        <script src="scripts/main.js"></script>
+        <link href="main.css" type="text/css" rel="stylesheet" />
+    </head>
+    <body class="flex-column-center">
+        <h1 class="page-header">Präattentive Wahrnehmung</h1>
+        <div class="page-nav">
+            <button id="test-button" class="active" disabled>Test</button
+            ><button id="results-button">Ergebnisse</button>
+        </div>
+        <div id="test-page" class="page-content flex-column-center">
+            <div
+                id="instruction-container"
+                class="instruction-container flex-column-center"
+            >
+                <p id="instruction-text">
+                    Im folgenden werden Ihnen mehrere geometrische Figuren mit
+                    unterschiedlichen Eigenschaften angezeigt. Sie werden
+                    gefragt eine Figur, die genaue Eigenschaften aufweist, zu
+                    identifizieren und dieses anzuklicken oder auf die
+                    Schaltfläche "Nicht enthalten" zu klicken, wenn Sie es nicht
+                    identifizieren können.
+                </p>
+                <button id="start-button" class="next-button">Start</button>
+            </div>
+            <div id="test-container" class="test-container flex-column-center">
+                <svg
+                    id="test-svg-container"
+                    class="svg"
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 300 300"
+                ></svg>
+            </div>
+        </div>
+    </body>
+</html>
