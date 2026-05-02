@@ -42,11 +42,8 @@ const POSITIONS = [
     { x: 282, y: 124 },
 ];
 
-function drawTestShapes(testAttribute, delay) {
-    const svg = document.getElementById('test-svg-container');
+function drawTestSVG(testAttribute, delay) {
     const currentPositions = [];
-
-    console.log(testAttribute);
 
     for (let i = 0; i < Math.floor(Math.random() * 10) + 10; i++) {
         let positionIndex = Math.floor(Math.random() * POSITIONS.length);
@@ -57,6 +54,14 @@ function drawTestShapes(testAttribute, delay) {
 
         currentPositions[i] = POSITIONS[positionIndex];
     }
+
+    drawTestShapes(testAttribute, currentPositions);
+
+    setTimeout(() => drawUniformShapes(testAttribute, currentPositions), delay);
+}
+
+function drawTestShapes(testAttribute, currentPositions) {
+    const svg = document.getElementById('test-svg-container');
 
     switch (testAttribute) {
         case 'none':
@@ -76,26 +81,58 @@ function drawTestShapes(testAttribute, delay) {
 
                 svg.appendChild(distractor);
             }
+
             break;
         case 'color':
-            const a = document.createElementNS(NAMESPACE, 'rect');
-            a.setAttribute('x', (currentPositions[0].x - 10).toString());
-            a.setAttribute('y', (currentPositions[0].y - 10).toString());
-            a.setAttribute('width', '20');
-            a.setAttribute('height', '20');
-            a.setAttribute('fill', '#ad2020');
+            const colorTarget = document.createElementNS(NAMESPACE, 'circle');
+            colorTarget.setAttribute('cx', currentPositions[0].x.toString());
+            colorTarget.setAttribute('cy', currentPositions[0].y.toString());
+            colorTarget.setAttribute('r', '10');
+            colorTarget.setAttribute('fill', '#076216');
 
-            svg.appendChild(a);
+            svg.appendChild(colorTarget);
+
+            for (let i = 1; i < currentPositions.length; i++) {
+                const distractor = document.createElementNS(
+                    NAMESPACE,
+                    'circle',
+                );
+                distractor.setAttribute('cx', currentPositions[i].x.toString());
+                distractor.setAttribute('cy', currentPositions[i].y.toString());
+                distractor.setAttribute('r', '10');
+                distractor.setAttribute('fill', '#ad2020');
+
+                svg.appendChild(distractor);
+            }
+
             break;
         case 'shape':
-            const z = document.createElementNS(NAMESPACE, 'rect');
-            z.setAttribute('x', (currentPositions[0].x - 10).toString());
-            z.setAttribute('y', (currentPositions[0].y - 10).toString());
-            z.setAttribute('width', '20');
-            z.setAttribute('height', '20');
-            z.setAttribute('fill', '#ad2020');
+            const shapeTarget = document.createElementNS(NAMESPACE, 'polygon');
+            shapeTarget.setAttribute(
+                'points',
+                `${currentPositions[0].x},${currentPositions[0].y - 10} ${currentPositions[0].x - 12},${currentPositions[0].y + 10} ${currentPositions[0].x + 12},${currentPositions[0].y + 10}`,
+            );
+            shapeTarget.setAttribute('fill', '#4e4e4e');
 
-            svg.appendChild(z);
+            svg.appendChild(shapeTarget);
+
+            for (let i = 1; i < currentPositions.length; i++) {
+                const distractor = document.createElementNS(NAMESPACE, 'rect');
+                distractor.setAttribute(
+                    'x',
+                    (currentPositions[i].x - 10).toString(),
+                );
+                distractor.setAttribute(
+                    'y',
+                    (currentPositions[i].y - 10).toString(),
+                );
+                distractor.setAttribute('width', '20');
+                distractor.setAttribute('height', '20');
+                distractor.setAttribute('fill', '#4e4e4e');
+
+                svg.appendChild(distractor);
+            }
+
             break;
         case 'motion':
             const b = document.createElementNS(NAMESPACE, 'rect');
@@ -106,26 +143,83 @@ function drawTestShapes(testAttribute, delay) {
             b.setAttribute('fill', '#ad2020');
 
             svg.appendChild(b);
+
             break;
         case 'shape-distractor':
-            const c = document.createElementNS(NAMESPACE, 'rect');
-            c.setAttribute('x', (currentPositions[0].x - 10).toString());
-            c.setAttribute('y', (currentPositions[0].y - 10).toString());
-            c.setAttribute('width', '20');
-            c.setAttribute('height', '20');
-            c.setAttribute('fill', '#ad2020');
+            const shapeDistractorTarget = document.createElementNS(
+                NAMESPACE,
+                'polygon',
+            );
+            shapeDistractorTarget.setAttribute(
+                'points',
+                `${currentPositions[0].x},${currentPositions[0].y - 10} ${currentPositions[0].x - 12},${currentPositions[0].y + 10} ${currentPositions[0].x + 12},${currentPositions[0].y + 10}`,
+            );
+            shapeDistractorTarget.setAttribute('fill', '#4e4e4e');
 
-            svg.appendChild(c);
+            svg.appendChild(shapeDistractorTarget);
+
+            for (let i = 1; i < Math.floor(currentPositions.length / 2); i++) {
+                const distractor = document.createElementNS(NAMESPACE, 'rect');
+                distractor.setAttribute(
+                    'x',
+                    (currentPositions[i].x - 10).toString(),
+                );
+                distractor.setAttribute(
+                    'y',
+                    (currentPositions[i].y - 10).toString(),
+                );
+                distractor.setAttribute('width', '20');
+                distractor.setAttribute('height', '20');
+                distractor.setAttribute('fill', '#4e4e4e');
+
+                svg.appendChild(distractor);
+            }
+
+            for (
+                let i = Math.floor(currentPositions.length / 2);
+                i < currentPositions.length;
+                i++
+            ) {
+                const distractor = document.createElementNS(
+                    NAMESPACE,
+                    'polygon',
+                );
+                distractor.setAttribute(
+                    'points',
+                    `${currentPositions[i].x},${currentPositions[i].y - 12} ${currentPositions[i].x - 10},${currentPositions[i].y - 5} ${currentPositions[i].x - 10},${currentPositions[i].y + 5} ${currentPositions[i].x},${currentPositions[i].y + 12} ${currentPositions[i].x + 10},${currentPositions[i].y + 5} ${currentPositions[i].x + 10},${currentPositions[i].y - 5}`,
+                );
+                distractor.setAttribute('fill', '#4e4e4e');
+
+                svg.appendChild(distractor);
+            }
+
             break;
         case 'none-distractor':
-            const d = document.createElementNS(NAMESPACE, 'rect');
-            d.setAttribute('x', (currentPositions[0].x - 10).toString());
-            d.setAttribute('y', (currentPositions[0].y - 10).toString());
-            d.setAttribute('width', '20');
-            d.setAttribute('height', '20');
-            d.setAttribute('fill', '#ad2020');
+            for (let i = 0; i < currentPositions.length; i++) {
+                const distractor = document.createElementNS(NAMESPACE, 'rect');
+                distractor.setAttribute(
+                    'x',
+                    (currentPositions[i].x - 10).toString(),
+                );
+                distractor.setAttribute(
+                    'y',
+                    (currentPositions[i].y - 10).toString(),
+                );
+                distractor.setAttribute('width', '20');
+                distractor.setAttribute('height', '20');
+                if (i < currentPositions.length / 4) {
+                    distractor.setAttribute('fill', '#2f00ff');
+                } else if (i < currentPositions.length / 2) {
+                    distractor.setAttribute('fill', '#bd0097');
+                } else if (i < (currentPositions.length / 2) * 3) {
+                    distractor.setAttribute('fill', '#ad2020');
+                } else {
+                    distractor.setAttribute('fill', '#eeff00');
+                }
 
-            svg.appendChild(d);
+                svg.appendChild(distractor);
+            }
+
             break;
         case 'motion-distractor':
             const e = document.createElementNS(NAMESPACE, 'rect');
@@ -138,117 +232,162 @@ function drawTestShapes(testAttribute, delay) {
             svg.appendChild(e);
             break;
         case 'color-distractor':
-            const f = document.createElementNS(NAMESPACE, 'rect');
-            f.setAttribute('x', (currentPositions[0].x - 10).toString());
-            f.setAttribute('y', (currentPositions[0].y - 10).toString());
-            f.setAttribute('width', '20');
-            f.setAttribute('height', '20');
-            f.setAttribute('fill', '#ad2020');
+            const colorDistractorTarget = document.createElementNS(
+                NAMESPACE,
+                'circle',
+            );
+            colorDistractorTarget.setAttribute(
+                'cx',
+                currentPositions[0].x.toString(),
+            );
+            colorDistractorTarget.setAttribute(
+                'cy',
+                currentPositions[0].y.toString(),
+            );
+            colorDistractorTarget.setAttribute('r', '10');
+            colorDistractorTarget.setAttribute('fill', '#076216');
 
-            svg.appendChild(f);
+            svg.appendChild(colorDistractorTarget);
+
+            for (let i = 1; i < currentPositions.length; i++) {
+                const distractor = document.createElementNS(
+                    NAMESPACE,
+                    'circle',
+                );
+                distractor.setAttribute('cx', currentPositions[i].x.toString());
+                distractor.setAttribute('cy', currentPositions[i].y.toString());
+                distractor.setAttribute('r', '10');
+                if (i < currentPositions.length / 4) {
+                    distractor.setAttribute('fill', '#2f00ff');
+                } else if (i < currentPositions.length / 2) {
+                    distractor.setAttribute('fill', '#bd0097');
+                } else if (i < (currentPositions.length / 2) * 3) {
+                    distractor.setAttribute('fill', '#ad2020');
+                } else {
+                    distractor.setAttribute('fill', '#eeff00');
+                }
+
+                svg.appendChild(distractor);
+            }
+
             break;
-        case 'motion-conjunction':
-            const g = document.createElementNS(NAMESPACE, 'rect');
-            g.setAttribute('x', (currentPositions[0].x - 10).toString());
-            g.setAttribute('y', (currentPositions[0].y - 10).toString());
-            g.setAttribute('width', '20');
-            g.setAttribute('height', '20');
-            g.setAttribute('fill', '#ad2020');
+        case 'color-shape-conjunction':
+            const shapeConjunctionTarget = document.createElementNS(
+                NAMESPACE,
+                'polygon',
+            );
+            shapeConjunctionTarget.setAttribute(
+                'points',
+                `${currentPositions[0].x},${currentPositions[0].y - 10} ${currentPositions[0].x - 12},${currentPositions[0].y + 10} ${currentPositions[0].x + 12},${currentPositions[0].y + 10}`,
+            );
+            shapeConjunctionTarget.setAttribute('fill', '#2f00ff');
 
-            svg.appendChild(g);
-            break;
-        case 'color-conjunction':
-            const h = document.createElementNS(NAMESPACE, 'rect');
-            h.setAttribute('x', (currentPositions[0].x - 10).toString());
-            h.setAttribute('y', (currentPositions[0].y - 10).toString());
-            h.setAttribute('width', '20');
-            h.setAttribute('height', '20');
-            h.setAttribute('fill', '#ad2020');
+            svg.appendChild(shapeConjunctionTarget);
 
-            svg.appendChild(h);
-            break;
-        case 'shape-conjunction':
-            const i = document.createElementNS(NAMESPACE, 'rect');
-            i.setAttribute('x', (currentPositions[0].x - 10).toString());
-            i.setAttribute('y', (currentPositions[0].y - 10).toString());
-            i.setAttribute('width', '20');
-            i.setAttribute('height', '20');
-            i.setAttribute('fill', '#ad2020');
+            for (let i = 1; i < Math.floor(currentPositions.length / 2); i++) {
+                const distractor = document.createElementNS(NAMESPACE, 'rect');
+                distractor.setAttribute(
+                    'x',
+                    (currentPositions[i].x - 10).toString(),
+                );
+                distractor.setAttribute(
+                    'y',
+                    (currentPositions[i].y - 10).toString(),
+                );
+                distractor.setAttribute('width', '20');
+                distractor.setAttribute('height', '20');
+                if (i < currentPositions.length / 4) {
+                    distractor.setAttribute('fill', '#2f00ff');
+                } else {
+                    distractor.setAttribute('fill', '#eeff00');
+                }
 
-            svg.appendChild(i);
-            break;
-        case 'none-conjunction':
-            const j = document.createElementNS(NAMESPACE, 'rect');
-            j.setAttribute('x', (currentPositions[0].x - 10).toString());
-            j.setAttribute('y', (currentPositions[0].y - 10).toString());
-            j.setAttribute('width', '20');
-            j.setAttribute('height', '20');
-            j.setAttribute('fill', '#ad2020');
+                svg.appendChild(distractor);
+            }
 
-            svg.appendChild(j);
+            for (
+                let i = Math.floor(currentPositions.length / 2);
+                i < currentPositions.length;
+                i++
+            ) {
+                const distractor = document.createElementNS(
+                    NAMESPACE,
+                    'polygon',
+                );
+                distractor.setAttribute(
+                    'points',
+                    `${currentPositions[i].x},${currentPositions[i].y - 10} ${currentPositions[i].x - 12},${currentPositions[i].y + 10} ${currentPositions[i].x + 12},${currentPositions[i].y + 10}`,
+                );
+                distractor.setAttribute('fill', '#eeff00');
+
+                svg.appendChild(distractor);
+            }
             break;
         default:
             break;
     }
+}
 
-    setTimeout(() => {
-        svg.textContent = '';
-        for (let i = 0; i < currentPositions.length; i++) {
-            const uniformElement = document.createElementNS(
-                NAMESPACE,
-                'circle',
-            );
-            uniformElement.setAttribute('cx', currentPositions[i].x.toString());
-            uniformElement.setAttribute('cy', currentPositions[i].y.toString());
-            uniformElement.setAttribute('r', '10');
-            uniformElement.setAttribute('fill', '#4e4e4e');
-            uniformElement.addEventListener('click', () => {
-                svg.textContent = '';
+function drawUniformShapes(testAttribute, currentPositions) {
+    const svg = document.getElementById('test-svg-container');
+    svg.textContent = '';
 
-                if (i == 0 && testAttribute !== 'none') {
-                    testObjectOnClickHandler(true, testAttribute, delay);
-                } else {
-                    testObjectOnClickHandler(false, testAttribute, delay);
-                }
-            });
-
-            svg.appendChild(uniformElement);
-        }
-
-        const noneElement = document.createElementNS(NAMESPACE, 'rect');
-        noneElement.setAttribute('x', '0');
-        noneElement.setAttribute('y', '250');
-        noneElement.setAttribute('width', '300');
-        noneElement.setAttribute('height', '35');
-        noneElement.setAttribute('rx', '10');
-        noneElement.setAttribute('ry', '10');
-        noneElement.setAttribute('fill', '#ad2020');
-
-        const textElement = document.createElementNS(NAMESPACE, 'text');
-        textElement.setAttribute('x', '70');
-        textElement.setAttribute('y', '275');
-        textElement.setAttribute('fill', '#ffffff');
-        textElement.setAttribute('font-size', '1.5rem');
-        textElement.textContent = 'Nicht enthalten';
-
-        const clickElement = document.createElementNS(NAMESPACE, 'rect');
-        clickElement.setAttribute('x', '0');
-        clickElement.setAttribute('y', '250');
-        clickElement.setAttribute('width', '300');
-        clickElement.setAttribute('height', '35');
-        clickElement.setAttribute('fill-opacity', '0');
-        clickElement.addEventListener('click', () => {
+    for (let i = 0; i < currentPositions.length; i++) {
+        const uniformElement = document.createElementNS(NAMESPACE, 'circle');
+        uniformElement.setAttribute('cx', currentPositions[i].x.toString());
+        uniformElement.setAttribute('cy', currentPositions[i].y.toString());
+        uniformElement.setAttribute('r', '10');
+        uniformElement.setAttribute('fill', '#4e4e4e');
+        uniformElement.addEventListener('click', () => {
             svg.textContent = '';
 
-            if (testAttribute === 'none') {
-                testObjectOnClickHandler(true, testAttribute, delay);
+            if (
+                i == 0 &&
+                testAttribute !== 'none' &&
+                testAttribute !== 'none-distractor'
+            ) {
+                testObjectOnClickHandler(true, testAttribute);
             } else {
-                testObjectOnClickHandler(false, testAttribute, delay);
+                testObjectOnClickHandler(false, testAttribute);
             }
         });
 
-        svg.appendChild(noneElement);
-        svg.appendChild(textElement);
-        svg.appendChild(clickElement);
-    }, delay);
+        svg.appendChild(uniformElement);
+    }
+
+    const buttonElement = document.createElementNS(NAMESPACE, 'rect');
+    buttonElement.setAttribute('x', '0');
+    buttonElement.setAttribute('y', '250');
+    buttonElement.setAttribute('width', '300');
+    buttonElement.setAttribute('height', '35');
+    buttonElement.setAttribute('rx', '10');
+    buttonElement.setAttribute('ry', '10');
+    buttonElement.setAttribute('fill', '#771701');
+
+    const textElement = document.createElementNS(NAMESPACE, 'text');
+    textElement.setAttribute('x', '70');
+    textElement.setAttribute('y', '275');
+    textElement.setAttribute('fill', '#ffffff');
+    textElement.setAttribute('font-size', '1.5rem');
+    textElement.textContent = 'Nicht enthalten';
+
+    const clickElement = document.createElementNS(NAMESPACE, 'rect');
+    clickElement.setAttribute('x', '0');
+    clickElement.setAttribute('y', '250');
+    clickElement.setAttribute('width', '300');
+    clickElement.setAttribute('height', '35');
+    clickElement.setAttribute('fill-opacity', '0');
+    clickElement.addEventListener('click', () => {
+        svg.textContent = '';
+
+        if (testAttribute === 'none' || testAttribute === 'none-distractor') {
+            testObjectOnClickHandler(true, testAttribute);
+        } else {
+            testObjectOnClickHandler(false, testAttribute);
+        }
+    });
+
+    svg.appendChild(buttonElement);
+    svg.appendChild(textElement);
+    svg.appendChild(clickElement);
 }

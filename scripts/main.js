@@ -15,10 +15,7 @@ const TEST_ATTRIBUTES = [
     'none-distractor',
     'motion-distractor',
     'color-distractor',
-    'motion-conjunction',
-    'color-conjunction',
-    'shape-conjunction',
-    'none-conjunction',
+    'color-shape-conjunction',
 ];
 
 const TARGET_TEXT = [
@@ -26,18 +23,16 @@ const TARGET_TEXT = [
     'das grüne Objekt',
     'das Dreieck',
     'motion',
-    'shape-distractor',
-    'none-distractor',
+    'das Dreieck',
+    'den Kreis',
     'motion-distractor',
-    'color-distractor',
-    'motion-conjunction',
-    'color-conjunction',
-    'shape-conjunction',
-    'none-conjunction',
+    'das grüne Objekt',
+    'das blaue Dreieck',
 ];
 
 const formData = new FormData();
 let testIndex = -1;
+let delay = 100;
 
 document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('start-button').addEventListener('click', () => {
@@ -46,40 +41,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('instruction-text').innerHTML =
                 `Identifizieren Sie im folgenden ${TARGET_TEXT[testIndex]}.`;
         } else {
-            showTest(TEST_ATTRIBUTES[testIndex], 200);
+            document.getElementById('test-container').style.display = 'flex';
+            document.getElementById('instruction-container').style.display =
+                'none';
+            drawTestSVG(TEST_ATTRIBUTES[testIndex], delay);
         }
     });
 });
 
-function showTest(testAttribute, delay) {
-    document.getElementById('test-container').style.display = 'flex';
-    document.getElementById('instruction-container').style.display = 'none';
-    drawTestShapes(testAttribute, delay);
-}
-
-function testObjectOnClickHandler(isTarget, testAttribute, delay) {
+function testObjectOnClickHandler(isTarget) {
     if (isTarget) {
         testIndex++;
-
         formData.set(`${testIndex + 200}`, `${delay}`);
-
-        if (testIndex >= TEST_ATTRIBUTES.length) {
-            sendResults(formData);
-
-            document.getElementById('test-container').style.display = 'none';
-            document.getElementById('instruction-container').style.display =
-                'flex';
-            document.getElementById('start-button').style.display = 'none';
-            document.getElementById('instruction-text').innerHTML =
-                'Vielen Dank für Ihre Teilnahme!';
-        } else {
-            document.getElementById('test-container').style.display = 'none';
-            document.getElementById('instruction-container').style.display =
-                'flex';
-            document.getElementById('instruction-text').innerHTML =
-                `Identifizieren Sie im folgenden ${TARGET_TEXT[testIndex]}.`;
-        }
+        delay = 100;
     } else {
-        drawTestShapes(testAttribute, delay + 200);
+        delay += 50;
+    }
+
+    if (testIndex >= TEST_ATTRIBUTES.length) {
+        sendResults(formData);
+
+        document.getElementById('test-container').style.display = 'none';
+        document.getElementById('instruction-container').style.display = 'flex';
+        document.getElementById('start-button').style.display = 'none';
+        document.getElementById('instruction-text').innerHTML =
+            'Vielen Dank für Ihre Teilnahme!';
+    } else {
+        document.getElementById('test-container').style.display = 'none';
+        document.getElementById('instruction-container').style.display = 'flex';
+        document.getElementById('instruction-text').innerHTML =
+            `Identifizieren Sie im folgenden ${TARGET_TEXT[testIndex]}.`;
     }
 }
