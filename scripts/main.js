@@ -22,10 +22,10 @@ const TARGET_TEXT = [
     'den Kreis',
     'das grüne Objekt',
     'das Dreieck',
-    'motion',
+    'das Objekt, das sich nach rechts bewegt',
     'das Dreieck',
     'den Kreis',
-    'motion-distractor',
+    'das Objekt, das sich nach rechts bewegt',
     'das grüne Objekt',
     'das blaue Dreieck',
 ];
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (testIndex < 0) {
             testIndex++;
             document.getElementById('instruction-text').innerHTML =
-                `Identifizieren Sie im folgenden ${TARGET_TEXT[testIndex]}.`;
+                `Identifizieren Sie im folgenden <span class="highlight">${TARGET_TEXT[testIndex]}</span>.`;
         } else {
             document.getElementById('test-container').style.display = 'flex';
             document.getElementById('instruction-container').style.display =
@@ -70,6 +70,6 @@ function testObjectOnClickHandler(isTarget) {
         document.getElementById('test-container').style.display = 'none';
         document.getElementById('instruction-container').style.display = 'flex';
         document.getElementById('instruction-text').innerHTML =
-            `Identifizieren Sie im folgenden ${TARGET_TEXT[testIndex]}.`;
+            `Identifizieren Sie im folgenden <span class="highlight">${TARGET_TEXT[testIndex]}</span>.`;
     }
 }
