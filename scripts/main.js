@@ -7,6 +7,7 @@ const API_KEY = 'AIzaSyBCxSKz2WdpkTDQCVGYEBGkBZrWkn0jLrY';
 const SHEET_ID = '10rJ7UajggY0MpcXdacHZm-NIlr-9YKkCnamMyLwrDoQ';
 
 const TEST_ATTRIBUTES = [
+    'color',
     'none',
     'color',
     'shape',
