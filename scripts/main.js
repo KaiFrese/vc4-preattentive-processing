@@ -20,6 +20,7 @@ const TEST_ATTRIBUTES = [
 ];
 
 const TARGET_TEXT = [
+    'das grüne Objekt',
     'den Kreis',
     'das grüne Objekt',
     'das Dreieck',
