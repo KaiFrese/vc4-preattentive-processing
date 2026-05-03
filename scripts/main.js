@@ -6,35 +6,33 @@
 const API_KEY = 'AIzaSyBCxSKz2WdpkTDQCVGYEBGkBZrWkn0jLrY';
 const SHEET_ID = '10rJ7UajggY0MpcXdacHZm-NIlr-9YKkCnamMyLwrDoQ';
 
+const START_DELAY = 50;
+
 const TEST_ATTRIBUTES = [
-    'color',
-    'none',
     'color',
     'shape',
     'motion',
-    'shape-distractor',
-    'none-distractor',
-    'motion-distractor',
     'color-distractor',
+    'triangle-distractor',
+    'rect-distractor',
+    'motion-distractor',
     'color-shape-conjunction',
 ];
 
 const TARGET_TEXT = [
     'das grüne Objekt',
-    'den Kreis',
-    'das grüne Objekt',
     'das Dreieck',
     'das Objekt, das sich nach rechts bewegt',
+    'das rote Objekt',
     'das Dreieck',
-    'den Kreis',
+    'das Quadrat',
     'das Objekt, das sich nach rechts bewegt',
-    'das grüne Objekt',
     'das blaue Dreieck',
 ];
 
 const formData = new FormData();
 let testIndex = -1;
-let delay = 100;
+let delay = START_DELAY;
 
 document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('start-button').addEventListener('click', () => {
@@ -55,7 +53,7 @@ function testObjectOnClickHandler(isTarget) {
     if (isTarget) {
         testIndex++;
         formData.set(`${testIndex + 200}`, `${delay}`);
-        delay = 100;
+        delay = START_DELAY;
     } else {
         delay += 50;
     }

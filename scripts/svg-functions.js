@@ -73,406 +73,166 @@ function drawTestSVG(testAttribute, delay) {
 }
 
 function drawTestShapes(testAttribute, currentPositions) {
+    let border = Math.floor(currentPositions.length / 2);
     const svg = document.getElementById('test-svg-container');
     svg.textContent = '';
 
     switch (testAttribute) {
-        case 'none':
-            for (let i = 0; i < currentPositions.length; i++) {
-                const distractor = document.createElementNS(NAMESPACE, 'rect');
-                distractor.setAttribute(
-                    'x',
-                    (currentPositions[i].x - 10).toString(),
-                );
-                distractor.setAttribute(
-                    'y',
-                    (currentPositions[i].y - 10).toString(),
-                );
-                distractor.setAttribute('width', '20');
-                distractor.setAttribute('height', '20');
-                distractor.setAttribute('fill', '#ad2020');
-
-                svg.appendChild(distractor);
-            }
-
-            break;
         case 'color':
-            const colorTarget = document.createElementNS(NAMESPACE, 'circle');
-            colorTarget.setAttribute('cx', currentPositions[0].x.toString());
-            colorTarget.setAttribute('cy', currentPositions[0].y.toString());
-            colorTarget.setAttribute('r', '10');
-            colorTarget.setAttribute('fill', '#076216');
-
-            svg.appendChild(colorTarget);
+            drawCircle(currentPositions[0], '#076216', svg);
 
             for (let i = 1; i < currentPositions.length; i++) {
-                const distractor = document.createElementNS(
-                    NAMESPACE,
-                    'circle',
-                );
-                distractor.setAttribute('cx', currentPositions[i].x.toString());
-                distractor.setAttribute('cy', currentPositions[i].y.toString());
-                distractor.setAttribute('r', '10');
-                distractor.setAttribute('fill', '#ad2020');
-
-                svg.appendChild(distractor);
+                drawCircle(currentPositions[i], '#ad2020', svg);
             }
 
             break;
         case 'shape':
-            const shapeTarget = document.createElementNS(NAMESPACE, 'polygon');
-            shapeTarget.setAttribute(
-                'points',
-                `${currentPositions[0].x},${currentPositions[0].y - 10} ${currentPositions[0].x - 12},${currentPositions[0].y + 10} ${currentPositions[0].x + 12},${currentPositions[0].y + 10}`,
-            );
-            shapeTarget.setAttribute('fill', '#4e4e4e');
-
-            svg.appendChild(shapeTarget);
+            drawTriangle(currentPositions[0], '#4e4e4e', svg);
 
             for (let i = 1; i < currentPositions.length; i++) {
-                const distractor = document.createElementNS(NAMESPACE, 'rect');
-                distractor.setAttribute(
-                    'x',
-                    (currentPositions[i].x - 10).toString(),
-                );
-                distractor.setAttribute(
-                    'y',
-                    (currentPositions[i].y - 10).toString(),
-                );
-                distractor.setAttribute('width', '20');
-                distractor.setAttribute('height', '20');
-                distractor.setAttribute('fill', '#4e4e4e');
-
-                svg.appendChild(distractor);
+                drawRect(currentPositions[i], '#4e4e4e', 20, svg);
             }
 
             break;
         case 'motion':
-            const motionTarget = document.createElementNS(NAMESPACE, 'rect');
-            motionTarget.setAttribute(
+            const motionTarget = drawRect(
+                currentPositions[0],
+                '#4e4e4e',
+                10,
+                svg,
+            );
+            animatePosition(
+                motionTarget,
                 'x',
-                (currentPositions[0].x - 15).toString(),
+                currentPositions[0].x - 15,
+                currentPositions[0].x + 5,
+                '2s',
             );
-            motionTarget.setAttribute(
-                'y',
-                (currentPositions[0].y - 5).toString(),
-            );
-            motionTarget.setAttribute('width', '10');
-            motionTarget.setAttribute('height', '10');
-            motionTarget.setAttribute('fill', '#4e4e4e');
-
-            svg.appendChild(motionTarget);
-
-            const motionTargetAnimation = document.createElementNS(
-                NAMESPACE,
-                'animate',
-            );
-            motionTargetAnimation.setAttribute('attributeName', 'x');
-            motionTargetAnimation.setAttribute('begin', '0s');
-            motionTargetAnimation.setAttribute('dur', '2s');
-            motionTargetAnimation.setAttribute(
-                'from',
-                `${currentPositions[0].x - 15}`,
-            );
-            motionTargetAnimation.setAttribute(
-                'to',
-                `${currentPositions[0].x + 5}`,
-            );
-            motionTargetAnimation.setAttribute('repeatCount', 'indefinite');
-
-            motionTarget.appendChild(motionTargetAnimation);
 
             for (let i = 1; i < currentPositions.length; i++) {
-                const distractor = document.createElementNS(NAMESPACE, 'rect');
-                distractor.setAttribute(
+                const distractor = drawRect(
+                    currentPositions[i],
+                    '#4e4e4e',
+                    10,
+                    svg,
+                );
+                animatePosition(
+                    distractor,
                     'x',
-                    (currentPositions[i].x + 5).toString(),
+                    currentPositions[i].x + 5,
+                    currentPositions[i].x - 15,
+                    '2s',
                 );
-                distractor.setAttribute(
-                    'y',
-                    (currentPositions[i].y - 5).toString(),
-                );
-                distractor.setAttribute('width', '10');
-                distractor.setAttribute('height', '10');
-                distractor.setAttribute('fill', '#4e4e4e');
-
-                svg.appendChild(distractor);
-
-                const distractorAnimation = document.createElementNS(
-                    NAMESPACE,
-                    'animate',
-                );
-                distractorAnimation.setAttribute('attributeName', 'x');
-                distractorAnimation.setAttribute('begin', '0s');
-                distractorAnimation.setAttribute('dur', '2s');
-                distractorAnimation.setAttribute(
-                    'from',
-                    `${currentPositions[i].x + 5}`,
-                );
-                distractorAnimation.setAttribute(
-                    'to',
-                    `${currentPositions[i].x - 15}`,
-                );
-                distractorAnimation.setAttribute('repeatCount', 'indefinite');
-
-                distractor.appendChild(distractorAnimation);
             }
 
             break;
-        case 'shape-distractor':
-            const shapeDistractorTarget = document.createElementNS(
-                NAMESPACE,
-                'polygon',
-            );
-            shapeDistractorTarget.setAttribute(
-                'points',
-                `${currentPositions[0].x},${currentPositions[0].y - 10} ${currentPositions[0].x - 12},${currentPositions[0].y + 10} ${currentPositions[0].x + 12},${currentPositions[0].y + 10}`,
-            );
-            shapeDistractorTarget.setAttribute('fill', '#4e4e4e');
+        case 'triangle-distractor':
+            drawTriangle(currentPositions[0], '#4e4e4e', svg);
 
-            svg.appendChild(shapeDistractorTarget);
-
-            for (let i = 1; i < Math.floor(currentPositions.length / 2); i++) {
-                const distractor = document.createElementNS(NAMESPACE, 'rect');
-                distractor.setAttribute(
-                    'x',
-                    (currentPositions[i].x - 10).toString(),
-                );
-                distractor.setAttribute(
-                    'y',
-                    (currentPositions[i].y - 10).toString(),
-                );
-                distractor.setAttribute('width', '20');
-                distractor.setAttribute('height', '20');
-                distractor.setAttribute('fill', '#4e4e4e');
-
-                svg.appendChild(distractor);
+            for (let i = 1; i < border; i++) {
+                drawRect(currentPositions[i], '#4e4e4e', 20, svg);
             }
 
-            for (
-                let i = Math.floor(currentPositions.length / 2);
-                i < currentPositions.length;
-                i++
-            ) {
-                const distractor = document.createElementNS(
-                    NAMESPACE,
-                    'polygon',
-                );
-                distractor.setAttribute(
-                    'points',
-                    `${currentPositions[i].x},${currentPositions[i].y - 12} ${currentPositions[i].x - 10},${currentPositions[i].y - 5} ${currentPositions[i].x - 10},${currentPositions[i].y + 5} ${currentPositions[i].x},${currentPositions[i].y + 12} ${currentPositions[i].x + 10},${currentPositions[i].y + 5} ${currentPositions[i].x + 10},${currentPositions[i].y - 5}`,
-                );
-                distractor.setAttribute('fill', '#4e4e4e');
-
-                svg.appendChild(distractor);
+            for (let i = border; i < currentPositions.length; i++) {
+                drawHexagon(currentPositions[i], '#4e4e4e', svg);
             }
 
             break;
-        case 'none-distractor':
-            for (let i = 0; i < currentPositions.length; i++) {
-                const distractor = document.createElementNS(NAMESPACE, 'rect');
-                distractor.setAttribute(
-                    'x',
-                    (currentPositions[i].x - 10).toString(),
-                );
-                distractor.setAttribute(
-                    'y',
-                    (currentPositions[i].y - 10).toString(),
-                );
-                distractor.setAttribute('width', '20');
-                distractor.setAttribute('height', '20');
-                if (i < currentPositions.length / 4) {
-                    distractor.setAttribute('fill', '#2f00ff');
-                } else if (i < currentPositions.length / 2) {
-                    distractor.setAttribute('fill', '#bd0097');
-                } else if (i < (currentPositions.length / 2) * 3) {
-                    distractor.setAttribute('fill', '#ad2020');
-                } else {
-                    distractor.setAttribute('fill', '#eeff00');
-                }
+        case 'rect-distractor':
+            drawRect(currentPositions[0], '#4e4e4e', 20, svg);
 
-                svg.appendChild(distractor);
+            for (let i = 1; i < border; i++) {
+                drawTriangle(currentPositions[i], '#4e4e4e', svg);
+            }
+
+            for (let i = border; i < currentPositions.length; i++) {
+                drawHexagon(currentPositions[i], '#4e4e4e', svg);
             }
 
             break;
         case 'motion-distractor':
-            const motionDistractorTarget = document.createElementNS(
-                NAMESPACE,
-                'rect',
+            const motionDistractorTarget = drawRect(
+                currentPositions[0],
+                '#4e4e4e',
+                10,
+                svg,
             );
-            motionDistractorTarget.setAttribute(
+            animatePosition(
+                motionDistractorTarget,
                 'x',
-                (currentPositions[0].x - 15).toString(),
-            );
-            motionDistractorTarget.setAttribute(
-                'y',
-                (currentPositions[0].y - 5).toString(),
-            );
-            motionDistractorTarget.setAttribute('width', '10');
-            motionDistractorTarget.setAttribute('height', '10');
-            motionDistractorTarget.setAttribute('fill', '#4e4e4e');
-
-            svg.appendChild(motionDistractorTarget);
-
-            const motionDistractorTargetAnimation = document.createElementNS(
-                NAMESPACE,
-                'animate',
-            );
-            motionDistractorTargetAnimation.setAttribute('attributeName', 'x');
-            motionDistractorTargetAnimation.setAttribute('begin', '0s');
-            motionDistractorTargetAnimation.setAttribute('dur', '2s');
-            motionDistractorTargetAnimation.setAttribute(
-                'from',
-                `${currentPositions[0].x - 15}`,
-            );
-            motionDistractorTargetAnimation.setAttribute(
-                'to',
-                `${currentPositions[0].x + 5}`,
-            );
-            motionDistractorTargetAnimation.setAttribute(
-                'repeatCount',
-                'indefinite',
+                currentPositions[0].x - 15,
+                currentPositions[0].x + 5,
+                '2s',
             );
 
-            motionDistractorTarget.appendChild(motionDistractorTargetAnimation);
-
-            for (let i = 1; i < currentPositions.length; i++) {
-                const distractor = document.createElementNS(NAMESPACE, 'rect');
-                distractor.setAttribute(
+            for (let i = 1; i < border; i++) {
+                const motionDistractorTarget = drawRect(
+                    currentPositions[i],
+                    '#4e4e4e',
+                    10,
+                    svg,
+                );
+                animatePosition(
+                    motionDistractorTarget,
                     'x',
-                    i < currentPositions.length / 2
-                        ? (currentPositions[i].x + 5).toString()
-                        : (currentPositions[i].x - 5).toString(),
+                    currentPositions[i].x + 5,
+                    currentPositions[i].x - 15,
+                    '2s',
                 );
-                distractor.setAttribute(
+            }
+
+            for (let i = border; i < currentPositions.length; i++) {
+                const motionDistractorTarget = drawRect(
+                    currentPositions[i],
+                    '#4e4e4e',
+                    10,
+                    svg,
+                );
+                animatePosition(
+                    motionDistractorTarget,
                     'y',
-                    i < currentPositions.length / 2
-                        ? (currentPositions[i].y - 5).toString()
-                        : (currentPositions[i].y - 15).toString(),
+                    currentPositions[i].y - 15,
+                    currentPositions[i].y + 5,
+                    '2s',
                 );
-                distractor.setAttribute('width', '10');
-                distractor.setAttribute('height', '10');
-                distractor.setAttribute('fill', '#4e4e4e');
-
-                svg.appendChild(distractor);
-
-                const distractorAnimation = document.createElementNS(
-                    NAMESPACE,
-                    'animate',
-                );
-                distractorAnimation.setAttribute(
-                    'attributeName',
-                    i < currentPositions.length / 2 ? 'x' : 'y',
-                );
-                distractorAnimation.setAttribute('begin', '0s');
-                distractorAnimation.setAttribute('dur', '2s');
-                distractorAnimation.setAttribute(
-                    'from',
-                    `${
-                        i < currentPositions.length / 2
-                            ? (currentPositions[i].x + 5).toString()
-                            : (currentPositions[i].y - 15).toString()
-                    }`,
-                );
-                distractorAnimation.setAttribute(
-                    'to',
-                    `${i < currentPositions.length / 2 ? currentPositions[i].x - 15 : currentPositions[i].y + 5}`,
-                );
-                distractorAnimation.setAttribute('repeatCount', 'indefinite');
-
-                distractor.appendChild(distractorAnimation);
             }
 
             break;
         case 'color-distractor':
-            const colorDistractorTarget = document.createElementNS(
-                NAMESPACE,
-                'circle',
-            );
-            colorDistractorTarget.setAttribute(
-                'cx',
-                currentPositions[0].x.toString(),
-            );
-            colorDistractorTarget.setAttribute(
-                'cy',
-                currentPositions[0].y.toString(),
-            );
-            colorDistractorTarget.setAttribute('r', '10');
-            colorDistractorTarget.setAttribute('fill', '#076216');
+            border = Math.floor(currentPositions.length / 4);
+            drawCircle(currentPositions[0], '#ff0000', svg);
 
-            svg.appendChild(colorDistractorTarget);
+            for (let i = 1; i < border; i++) {
+                drawCircle(currentPositions[i], '#2f00ff', svg);
+            }
 
-            for (let i = 1; i < currentPositions.length; i++) {
-                const distractor = document.createElementNS(
-                    NAMESPACE,
-                    'circle',
-                );
-                distractor.setAttribute('cx', currentPositions[i].x.toString());
-                distractor.setAttribute('cy', currentPositions[i].y.toString());
-                distractor.setAttribute('r', '10');
-                if (i < currentPositions.length / 4) {
-                    distractor.setAttribute('fill', '#2f00ff');
-                } else if (i < currentPositions.length / 2) {
-                    distractor.setAttribute('fill', '#bd0097');
-                } else if (i < (currentPositions.length / 2) * 3) {
-                    distractor.setAttribute('fill', '#ad2020');
-                } else {
-                    distractor.setAttribute('fill', '#eeff00');
-                }
+            for (let i = border; i < border * 2; i++) {
+                drawCircle(currentPositions[i], '#bd0097', svg);
+            }
 
-                svg.appendChild(distractor);
+            for (let i = border * 2; i < border * 3; i++) {
+                drawCircle(currentPositions[i], '#076216', svg);
+            }
+
+            for (let i = border * 3; i < currentPositions.length; i++) {
+                drawCircle(currentPositions[i], '#eeff00', svg);
             }
 
             break;
         case 'color-shape-conjunction':
-            const shapeConjunctionTarget = document.createElementNS(
-                NAMESPACE,
-                'polygon',
-            );
-            shapeConjunctionTarget.setAttribute(
-                'points',
-                `${currentPositions[0].x},${currentPositions[0].y - 10} ${currentPositions[0].x - 12},${currentPositions[0].y + 10} ${currentPositions[0].x + 12},${currentPositions[0].y + 10}`,
-            );
-            shapeConjunctionTarget.setAttribute('fill', '#2f00ff');
+            drawTriangle(currentPositions[0], '#2f00ff', svg);
 
-            svg.appendChild(shapeConjunctionTarget);
-
-            for (let i = 1; i < Math.floor(currentPositions.length / 2); i++) {
-                const distractor = document.createElementNS(NAMESPACE, 'rect');
-                distractor.setAttribute(
-                    'x',
-                    (currentPositions[i].x - 10).toString(),
-                );
-                distractor.setAttribute(
-                    'y',
-                    (currentPositions[i].y - 10).toString(),
-                );
-                distractor.setAttribute('width', '20');
-                distractor.setAttribute('height', '20');
-                distractor.setAttribute(
-                    'fill',
+            for (let i = 1; i < border; i++) {
+                drawRect(
+                    currentPositions[i],
                     i < currentPositions.length / 4 ? '#2f00ff' : '#eeff00',
+                    20,
+                    svg,
                 );
-
-                svg.appendChild(distractor);
             }
 
-            for (
-                let i = Math.floor(currentPositions.length / 2);
-                i < currentPositions.length;
-                i++
-            ) {
-                const distractor = document.createElementNS(
-                    NAMESPACE,
-                    'polygon',
-                );
-                distractor.setAttribute(
-                    'points',
-                    `${currentPositions[i].x},${currentPositions[i].y - 10} ${currentPositions[i].x - 12},${currentPositions[i].y + 10} ${currentPositions[i].x + 12},${currentPositions[i].y + 10}`,
-                );
-                distractor.setAttribute('fill', '#eeff00');
-
-                svg.appendChild(distractor);
+            for (let i = border; i < currentPositions.length; i++) {
+                drawTriangle(currentPositions[i], '#eeff00', svg);
             }
             break;
         default:
@@ -485,11 +245,7 @@ function drawUniformShapes(testAttribute, currentPositions) {
     svg.textContent = '';
 
     for (let i = 0; i < currentPositions.length; i++) {
-        const uniformElement = document.createElementNS(NAMESPACE, 'circle');
-        uniformElement.setAttribute('cx', currentPositions[i].x.toString());
-        uniformElement.setAttribute('cy', currentPositions[i].y.toString());
-        uniformElement.setAttribute('r', '10');
-        uniformElement.setAttribute('fill', '#4e4e4e');
+        const uniformElement = drawCircle(currentPositions[i], '#4e4e4e', svg);
 
         uniformElement.addEventListener('click', () => {
             svg.textContent = '';
@@ -504,8 +260,6 @@ function drawUniformShapes(testAttribute, currentPositions) {
                 testObjectOnClickHandler(false, testAttribute);
             }
         });
-
-        svg.appendChild(uniformElement);
     }
 
     const buttonBackgroundElement = document.createElementNS(NAMESPACE, 'rect');
@@ -555,7 +309,70 @@ function showCountdown(number) {
     textElement.setAttribute('y', '140');
     textElement.setAttribute('fill', '#511000');
     textElement.setAttribute('font-size', '5rem');
-    textElement.textContent = number.toString();
+    textElement.textContent = `${number}`;
 
     svg.appendChild(textElement);
+}
+
+function drawCircle(position, color, svg) {
+    const circle = document.createElementNS(NAMESPACE, 'circle');
+    circle.setAttribute('cx', `${position.x}`);
+    circle.setAttribute('cy', `${position.y}`);
+    circle.setAttribute('r', '10');
+    circle.setAttribute('fill', color);
+
+    svg.appendChild(circle);
+
+    return circle;
+}
+
+function drawRect(position, color, size, svg) {
+    const rect = document.createElementNS(NAMESPACE, 'rect');
+    rect.setAttribute('x', `${position.x - size / 2}`);
+    rect.setAttribute('y', `${position.y - size / 2}`);
+    rect.setAttribute('width', size);
+    rect.setAttribute('height', size);
+    rect.setAttribute('fill', color);
+
+    svg.appendChild(rect);
+
+    return rect;
+}
+
+function drawTriangle(position, color, svg) {
+    const triangle = document.createElementNS(NAMESPACE, 'polygon');
+    triangle.setAttribute(
+        'points',
+        `${position.x},${position.y - 10} ${position.x - 12},${position.y + 10} ${position.x + 12},${position.y + 10}`,
+    );
+    triangle.setAttribute('fill', color);
+
+    svg.appendChild(triangle);
+
+    return triangle;
+}
+
+function drawHexagon(position, color, svg) {
+    const hexagon = document.createElementNS(NAMESPACE, 'polygon');
+    hexagon.setAttribute(
+        'points',
+        `${position.x},${position.y - 12} ${position.x - 10},${position.y - 5} ${position.x - 10},${position.y + 5} ${position.x},${position.y + 12} ${position.x + 10},${position.y + 5} ${position.x + 10},${position.y - 5}`,
+    );
+    hexagon.setAttribute('fill', color);
+
+    svg.appendChild(hexagon);
+
+    return hexagon;
+}
+
+function animatePosition(shape, property, start, end, duration) {
+    const animation = document.createElementNS(NAMESPACE, 'animate');
+    animation.setAttribute('attributeName', property);
+    animation.setAttribute('begin', '0s');
+    animation.setAttribute('dur', duration);
+    animation.setAttribute('from', `${start}`);
+    animation.setAttribute('to', `${end}`);
+    animation.setAttribute('repeatCount', 'indefinite');
+
+    shape.appendChild(animation);
 }
